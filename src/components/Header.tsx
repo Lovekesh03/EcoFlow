@@ -1,11 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from '../utils/motion';
+import AuthModal from './AuthModal';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'register'>('signin');
+
+  const openAuth = (mode: 'signin' | 'register') => {
+    setAuthMode(mode);
+    setAuthOpen(true);
+  };
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const ce = e as CustomEvent<{ mode?: 'signin' | 'register' }>;
+      openAuth(ce.detail?.mode ?? 'signin');
+    };
+    window.addEventListener('open-auth', handler as EventListener);
+    return () => window.removeEventListener('open-auth', handler as EventListener);
+  }, []);
 
   return (
     <motion.header 
@@ -25,7 +42,7 @@ const Header = () => {
         </motion.div>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-8">
+        <nav className="hidden md:flex items-center space-x-6">
           {['Home', 'Community', 'Blogs'].map((item) => (
             <motion.div
               key={item}
@@ -40,9 +57,18 @@ const Header = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-full font-medium transition-colors"
+            className="px-4 py-2 rounded-full font-medium transition-colors border border-white/30 hover:bg-white/10"
+            onClick={() => openAuth('signin')}
           >
-            Connect Wallet
+            Sign in
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-full font-medium transition-colors"
+            onClick={() => openAuth('register')}
+          >
+            Get Started
           </motion.button>
         </nav>
 
@@ -82,12 +108,17 @@ const Header = () => {
                 {item}
               </Link>
             ))}
-            <button className="w-full text-left bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded font-medium transition-colors">
-              Connect Wallet
+            <button className="w-full text-left px-3 py-2 rounded font-medium transition-colors border border-white/30 hover:bg-white/10" onClick={() => { setIsOpen(false); openAuth('signin'); }}>
+              Sign in
+            </button>
+            <button className="w-full text-left bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded font-medium transition-colors" onClick={() => { setIsOpen(false); openAuth('register'); }}>
+              Get Started
             </button>
           </div>
         </motion.div>
       )}
+
+      <AuthModal open={authOpen} initialMode={authMode} onClose={() => setAuthOpen(false)} />
     </motion.header>
   );
 };

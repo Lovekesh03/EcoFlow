@@ -108,8 +108,9 @@ const CommunitySection = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-medium transition-colors"
+            onClick={() => window.dispatchEvent(new CustomEvent('open-auth', { detail: { mode: 'register' } }))}
           >
-            Join Our Community
+            <span>Join Our Community</span>
           </motion.button>
         </motion.div>
       </div>

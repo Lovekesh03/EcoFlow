@@ -99,6 +99,7 @@ const HeroSection = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-full font-medium transition-colors"
+                onClick={() => window.dispatchEvent(new CustomEvent('open-auth', { detail: { mode: 'register' } }))}
               >
                 Get Started
               </motion.button>
@@ -106,6 +107,7 @@ const HeroSection = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-transparent border border-white hover:bg-white/10 px-6 py-3 rounded-full font-medium transition-colors"
+                onClick={() => window.dispatchEvent(new CustomEvent('open-auth', { detail: { mode: 'signin' } }))}
               >
                 Learn More
               </motion.button>
